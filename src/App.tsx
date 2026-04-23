@@ -146,6 +146,8 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [lastOrderDetails, setLastOrderDetails] = useState<any>(null);
   
   // Checkout Form State
   const [customerFirstName, setCustomerFirstName] = useState('');
@@ -253,7 +255,15 @@ export default function App() {
       const whatsappUrl = `https://wa.me/6281234567890?text=${message}`;
       window.open(whatsappUrl, '_blank');
       
-      alert("Pesanan berhasil dikirim ke database dan diteruskan ke WhatsApp!");
+      setLastOrderDetails({
+        name: `${customerFirstName} ${customerLastName}`,
+        products: productNames,
+        total: formatPrice(cartTotal),
+        time: formattedTime,
+        date: formattedDate
+      });
+      
+      setShowSuccess(true);
       setCart([]);
       setIsCartOpen(false);
       setCustomerFirstName('');
@@ -262,6 +272,9 @@ export default function App() {
       setCustomerCity('');
       setCustomerZip('');
       setCustomerAddress('');
+      
+      // Auto hide success message after 10 seconds
+      setTimeout(() => setShowSuccess(false), 10000);
     } catch (error) {
       console.error("Submission error:", error);
       alert("Terjadi kesalahan saat mengirim pesanan. Silakan coba lagi.");
@@ -273,6 +286,51 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-olive-200 selection:text-olive-900">
       
+      {/* Success Notification */}
+      <AnimatePresence>
+        {showSuccess && lastOrderDetails && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] w-[95%] max-w-md bg-white rounded-3xl shadow-2xl border border-olive-200 p-6 overflow-hidden"
+          >
+            <div className="absolute top-0 left-0 w-full h-1 bg-green-500" />
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+                <Check className="w-6 h-6 text-green-600" />
+              </div>
+              <div className="flex-1">
+                <h4 className="text-lg font-serif font-bold text-olive-900 mb-1">Data Tersimpan Berhasil!</h4>
+                <p className="text-sm text-olive-600 mb-4">Rincian pesanan telah dikirim ke database & diteruskan ke WA Admin.</p>
+                
+                <div className="bg-olive-50 rounded-2xl p-4 space-y-2 text-xs border border-olive-100">
+                  <div className="flex justify-between">
+                    <span className="text-olive-400">Pemesan:</span>
+                    <span className="font-bold text-olive-900">{lastOrderDetails.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-olive-400">Produk:</span>
+                    <span className="font-bold text-olive-900 text-right max-w-[150px] truncate">{lastOrderDetails.products}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-olive-400">Total:</span>
+                    <span className="font-bold text-olive-900 text-green-600">{lastOrderDetails.total}</span>
+                  </div>
+                </div>
+                
+                <button 
+                  onClick={() => setShowSuccess(false)}
+                  className="mt-4 w-full py-2 bg-olive-900 text-white rounded-xl text-sm font-medium hover:bg-olive-800 transition-colors"
+                >
+                  Tutup
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* --- Navbar --- */}
       <nav id="navbar" className="sticky top-0 z-40 bg-olive-50/80 backdrop-blur-md border-b border-olive-200 py-4 px-6 md:px-12 flex items-center justify-between">
         <div className="flex items-center gap-2">
