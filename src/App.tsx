@@ -224,7 +224,7 @@ export default function App() {
     };
 
     try {
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzGk2TPK32dr1RayjQsSo6r_dseodjMsNbPCvI-utZYT0tq2Qr_3GT6MiRaE4NG6eiQ/exec';
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyWvW3a4doBEKdtXAkS-_fzSmS1T8TPpBxCr9U___3Q-0KvVrA_M450WD1duaUPp4_z/exec';
       
       // Mengirim sebagai JSON dengan Content-Type text/plain untuk menghindari CORS preflight
       // dan memastikan Google Apps Script dapat menerima data dengan lengkap
