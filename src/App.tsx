@@ -223,7 +223,7 @@ export default function App() {
     sheetData.append('Waktu & Tanggal', `${formattedTime}, ${formattedDate}`);
 
     try {
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbznp-4ZuK8cv9JmKCIMKmA6TjHV0Vdr7GTM-MQ7JB2q4IIfFSl_CP8nFB6LwY5SRxM/exec';
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbwrtwIfwERuW5W5uqXLQSYbP0wOMf9kKhjPmbC4BlpmHx9F9FoI8s6MWfR7zyq8WfIS/exec';
       
       await fetch(scriptUrl, {
         method: 'POST',
