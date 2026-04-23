@@ -41,7 +41,7 @@ const PRODUCTS: Product[] = [
     id: 1,
     name: "Keripik Tempe RW.04",
     price: 15000,
-    image: "https://images.unsplash.com/photo-1541539150720-3b3df829ce3a?q=80&w=800&auto=format&fit=crop",
+    image: "https://drive.google.com/thumbnail?id=1QJ8HE5yIlRvbBma3vpVsmSVduee1wTOA&sz=w800",
     category: "Camilan",
     description: "Keripik tempe renyah buatan warga RW.04 dengan bumbu rahasia Tegal Parang."
   },
