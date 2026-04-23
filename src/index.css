@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "Inter", sans-serif;
+  
+  --color-olive-50: #f7f7f2;
+  --color-olive-100: #efefdf;
+  --color-olive-200: #dfdfbf;
+  --color-olive-300: #bfbf8f;
+  --color-olive-400: #9f9f5f;
+  --color-olive-500: #5A5A40;
+  --color-olive-600: #4a4a35;
+  --color-olive-700: #3a3a2a;
+  --color-olive-800: #2a2a1f;
+  --color-olive-900: #1a1a14;
+}
+
+@layer base {
+  body {
+    @apply bg-olive-50 text-olive-900 font-sans;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
