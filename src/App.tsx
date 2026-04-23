@@ -440,7 +440,7 @@ export default function App() {
             className="hidden lg:block absolute right-20 w-96 h-[500px] bg-white rounded-[40px] shadow-2xl p-4 overflow-hidden"
           >
             <img 
-              src="https://images.unsplash.com/photo-1541539150720-3b3df829ce3a?q=80&w=800&auto=format&fit=crop" 
+              src="https://drive.google.com/thumbnail?id=1QJ8HE5yIlRvbBma3vpVsmSVduee1wTOA&sz=w800" 
               alt="Produk Utama"
               className="w-full h-full object-cover rounded-[32px]"
             />
