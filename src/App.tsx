@@ -211,30 +211,27 @@ export default function App() {
     const productNames = cart.map(item => `${item.name} (x${item.quantity})`).join(', ');
     
     // Data for Google Sheets
-    const formData = {
-      'Nama Depan': customerFirstName,
-      'Nama Belakang': customerLastName,
-      'Email': customerEmail,
-      'Alamat': customerAddress,
-      'Kota': customerCity,
-      'Kode Pos': customerZip,
-      'Nama Produk': productNames,
-      'Total Harga': formatPrice(cartTotal),
-      'Waktu & Tanggal': `${formattedTime}, ${formattedDate}`
-    };
+    const sheetData = new URLSearchParams();
+    sheetData.append('Nama Depan', customerFirstName);
+    sheetData.append('Nama Belakang', customerLastName);
+    sheetData.append('Email', customerEmail);
+    sheetData.append('Alamat', customerAddress);
+    sheetData.append('Kota', customerCity);
+    sheetData.append('Kode Pos', customerZip);
+    sheetData.append('Nama Produk', productNames);
+    sheetData.append('Total Harga', formatPrice(cartTotal));
+    sheetData.append('Waktu & Tanggal', `${formattedTime}, ${formattedDate}`);
 
     try {
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyWvW3a4doBEKdtXAkS-_fzSmS1T8TPpBxCr9U___3Q-0KvVrA_M450WD1duaUPp4_z/exec';
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbznp-4ZuK8cv9JmKCIMKmA6TjHV0Vdr7GTM-MQ7JB2q4IIfFSl_CP8nFB6LwY5SRxM/exec';
       
-      // Mengirim sebagai JSON dengan Content-Type text/plain untuk menghindari CORS preflight
-      // dan memastikan Google Apps Script dapat menerima data dengan lengkap
       await fetch(scriptUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: {
-          'Content-Type': 'text/plain'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify(formData)
+        body: sheetData.toString()
       });
 
       const message = `*PESANAN BARU - LOK4L4KU RW.04*%0A` +
