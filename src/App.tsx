@@ -15,7 +15,8 @@ import {
   Star,
   ChevronRight,
   Menu,
-  ShoppingBag
+  ShoppingBag,
+  Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
