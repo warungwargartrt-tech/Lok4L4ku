@@ -196,8 +196,7 @@ export default function App() {
     if (cart.length === 0) return alert("Keranjang masih kosong!");
     if (isSubmitting) return;
 
-    setIsSubmitting(true);
-    
+    // 1. Capture ALL data needed for Sheet & WhatsApp BEFORE resetting
     const now = new Date();
     const formattedDate = now.toLocaleDateString('id-ID', { 
       weekday: 'long', 
@@ -211,73 +210,93 @@ export default function App() {
     });
 
     const productNames = cart.map(item => `${item.name} (x${item.quantity})`).join(', ');
+    const currentTotal = formatPrice(cartTotal);
+    const firstName = customerFirstName;
+    const lastName = customerLastName;
+    const email = customerEmail;
+    const address = customerAddress;
+    const city = customerCity;
+    const zip = customerZip;
+    
+    setIsSubmitting(true);
     
     // Data for Google Sheets
     const sheetData = new URLSearchParams();
-    sheetData.append('Nama Depan', customerFirstName);
-    sheetData.append('Nama Belakang', customerLastName);
-    sheetData.append('Email', customerEmail);
-    sheetData.append('Alamat', customerAddress);
-    sheetData.append('Kota', customerCity);
-    sheetData.append('Kode Pos', customerZip);
+    sheetData.append('Nama Depan', firstName);
+    sheetData.append('Nama Belakang', lastName);
+    sheetData.append('Email', email);
+    sheetData.append('Alamat', address);
+    sheetData.append('Kota', city);
+    sheetData.append('Kode Pos', zip);
     sheetData.append('Nama Produk', productNames);
-    sheetData.append('Total Harga', formatPrice(cartTotal));
+    sheetData.append('Total Harga', currentTotal);
     sheetData.append('Waktu & Tanggal', `${formattedTime}, ${formattedDate}`);
 
     try {
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbwrtwIfwERuW5W5uqXLQSYbP0wOMf9kKhjPmbC4BlpmHx9F9FoI8s6MWfR7zyq8WfIS/exec';
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzYDIHCzq-7PS2z1taIPPysV8IwGm_taVvypKPC-ExBS2YLJKrVTjKCuu-6ym-cU0sK/exec';
       
-      await fetch(scriptUrl, {
+      // Kirim ke Google Sheets secara background agar lebih responsif
+      fetch(scriptUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: sheetData.toString()
-      });
+      }).catch(err => console.error("Background submission error:", err));
 
-      const message = `*PESANAN BARU - LOK4L4KU RW.04*%0A` +
-        `--------------------------------%0A` +
-        `*Data Pemesan:*%0A` +
-        `Nama: ${customerFirstName} ${customerLastName}%0A` +
-        `Email: ${customerEmail}%0A` +
-        `Alamat: ${customerAddress}%0A` +
-        `Kota: ${customerCity}%0A` +
-        `Kode Pos: ${customerZip}%0A%0A` +
-        `*Rincian Produk:*%0A` +
-        `${productNames}%0A%0A` +
-        `*Total Harga: ${formatPrice(cartTotal)}*%0A` +
-        `--------------------------------%0A` +
-        `*Waktu:* ${formattedTime}%0A` +
-        `*Tanggal:* ${formattedDate}%0A%0A` +
-        `Mohon segera diproses ya, terima kasih!`;
-
-      const whatsappUrl = `https://wa.me/6281234567890?text=${message}`;
-      window.open(whatsappUrl, '_blank');
-      
+      // Simpan rincian untuk ditampilkan di pesan sukses
       setLastOrderDetails({
-        name: `${customerFirstName} ${customerLastName}`,
+        name: `${firstName} ${lastName}`,
         products: productNames,
-        total: formatPrice(cartTotal),
+        total: currentTotal,
         time: formattedTime,
         date: formattedDate
       });
       
-      setShowSuccess(true);
+      // Reset State & Form (SEGERA agar responsif)
       setCart([]);
+      localStorage.removeItem('lok4l4ku-cart');
+      
       setIsCartOpen(false);
+      setShowSuccess(true);
+      
       setCustomerFirstName('');
       setCustomerLastName('');
       setCustomerEmail('');
       setCustomerCity('');
       setCustomerZip('');
       setCustomerAddress('');
+
+      // WhatsApp Message
+      const message = `*PESANAN BARU - LOK4L4KU RW.04*%0A` +
+        `--------------------------------%0A` +
+        `*Data Pemesan:*%0A` +
+        `Nama: ${firstName} ${lastName}%0A` +
+        `Email: ${email}%0A` +
+        `Alamat: ${address}%0A` +
+        `Kota: ${city}%0A` +
+        `Kode Pos: ${zip}%0A%0A` +
+        `*Rincian Produk:*%0A` +
+        `${productNames}%0A%0A` +
+        `*Total Harga: ${currentTotal}*%0A` +
+        `--------------------------------%0A` +
+        `*Waktu:* ${formattedTime}%0A` +
+        `*Tanggal:* ${formattedDate}%0A%0A` +
+        `Mohon segera diproses ya, terima kasih!`;
+
+      const whatsappUrl = `https://wa.me/6281234567890?text=${message}`;
       
-      // Auto hide success message after 10 seconds
+      // Berikan sedikit delay sebelum buka WhatsApp agar UI sukses terlihat dulu
+      setTimeout(() => {
+        window.open(whatsappUrl, '_blank');
+      }, 500);
+      
+      // Sembunyikan notifikasi sukses setelah 10 detik
       setTimeout(() => setShowSuccess(false), 10000);
     } catch (error) {
       console.error("Submission error:", error);
-      alert("Terjadi kesalahan saat mengirim pesanan. Silakan coba lagi.");
+      alert("Terjadi kesalahan sistem. Silakan hubungi admin via WhatsApp.");
     } finally {
       setIsSubmitting(false);
     }
