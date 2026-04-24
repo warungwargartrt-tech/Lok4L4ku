@@ -233,17 +233,17 @@ export default function App() {
     sheetData.append('Waktu & Tanggal', `${formattedTime}, ${formattedDate}`);
 
     try {
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzYDIHCzq-7PS2z1taIPPysV8IwGm_taVvypKPC-ExBS2YLJKrVTjKCuu-6ym-cU0sK/exec';
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyrBf19MYHgUYcVd3XpwPfArsshRCAPmr1XIWD1HfMJ9ts6WbjftZwE55BSahxahYqW/exec';
       
-      // Kirim ke Google Sheets secara background agar lebih responsif
-      fetch(scriptUrl, {
+      // Kirim ke Google Sheets dengan format form-urlencoded yang lebih kompatibel dengan Apps Script doPost
+      await fetch(scriptUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: sheetData.toString()
-      }).catch(err => console.error("Background submission error:", err));
+      });
 
       // Simpan rincian untuk ditampilkan di pesan sukses
       setLastOrderDetails({
